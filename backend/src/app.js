@@ -41,26 +41,31 @@ export function createApp() {
         preload: true,
       },
       referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+      // API consumida desde otro origen (Vercel -> Render)
+      crossOriginResourcePolicy: { policy: 'cross-origin' },
     })
   );
 
   // 2. CORS restringido exclusivamente al dominio del frontend con credenciales y X-CSRF-Token
   const allowedOrigins = env.CORS_ORIGIN.split(',')
-    .map((o) => o.trim().replace(/\/$/, ''))
+    .map((o) => o.trim().replace(/^['"]|['"]$/g, '').replace(/\/$/, ''))
     .filter(Boolean);
 
-  app.use(
-    cors({
-      origin(origin, callback) {
-        if (!origin || allowedOrigins.includes(origin.replace(/\/$/, ''))) {
-          return callback(null, true);
-        }
-        return callback(Object.assign(new Error('Origen no permitido por CORS.'), { status: 403 }));
-      },
-      credentials: true,
-      allowedHeaders: ['Content-Type', 'X-CSRF-Token'],
-    })
-  );
+  const corsOptions = {
+    origin(origin, callback) {
+      if (!origin || allowedOrigins.includes(origin.replace(/\/$/, ''))) {
+        return callback(null, true);
+      }
+      return callback(Object.assign(new Error('Origen no permitido por CORS.'), { status: 403 }));
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'X-CSRF-Token'],
+    optionsSuccessStatus: 204,
+  };
+
+  app.use(cors(corsOptions));
+  app.options('*', cors(corsOptions));
 
   // 3. Compresión HTTP
   app.use(compression());

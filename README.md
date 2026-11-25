@@ -28,14 +28,18 @@ npm run dev
 - `NODE_ENV` (`production` en Render)
 - `PORT` (`3000` o el puerto asignado por Render)
 - `DATABASE_URL`
-- `CORS_ORIGIN` (URL de Vercel sin barra final)
+- `DB_SSL_CA` (opcional, certificado CA de Supabase en PEM o base64)
+- `CORS_ORIGIN` (URL de Vercel sin barra final, ej. `https://laboratorio-sistema.vercel.app`)
 - `DATA_ENCRYPTION_KEY` (32 bytes en base64: `node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"`)
 - `DATA_ENCRYPTION_KEY_VERSION` (`v1`)
 - `DATA_ENCRYPTION_KEY_PREV` (opcional, para rotación sin pérdida de datos)
 - `DATA_ENCRYPTION_KEY_PREV_VERSION` (opcional, `v0`)
 - `JWT_SECRET` (mínimo 32 caracteres aleatorios)
+- `JWT_EXPIRES_IN` (`25m`, expiración deslizante por inactividad)
 - `HMAC_SECRET` (mínimo 32 caracteres aleatorios)
+- `CSRF_SECRET` (opcional, mínimo 32 caracteres; si se omite respalda con `HMAC_SECRET`)
 - `COOKIE_SAME_SITE` (`none` en producción cross-site entre Vercel y Render)
+- `COOKIE_SECURE` (`true` en producción)
 
 ### Frontend (`frontend/.env` o panel de Vercel)
 - `VITE_API_URL` (URL pública del backend en Render, sin barra final)
@@ -83,3 +87,8 @@ npm run dev
   1. **IDOR (A01):** Con sesión del usuario A, solicitar `GET /api/notes/<id-de-nota-de-B>` → debe responder `404`.
   2. **Inyección / XSS (A05):** Enviar `' OR 1=1 --` en login y `<script>alert(1)</script>` en una nota → rechazado/neutralizado sin ejecución.
   3. **Fuerza bruta (A07):** Realizar 6 intentos fallidos de login → debe responder `429 Too Many Requests`.
+
+## 6. Historial de cambios y política de seguridad
+- Consulta [CHANGELOG.md](./CHANGELOG.md) para el historial detallado de versiones y correcciones.
+- Consulta [SECURITY.md](./SECURITY.md) para la política de seguridad y reporte responsable de vulnerabilidades.
+

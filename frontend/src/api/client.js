@@ -25,10 +25,12 @@ export async function apiRequest(path, options = {}) {
   const { headers = {}, method = 'GET', ...restOptions } = options;
   const upperMethod = String(method).toUpperCase();
 
-  const mergedHeaders = {
-    'Content-Type': 'application/json',
-    ...headers,
-  };
+  const mergedHeaders = { ...headers };
+
+  // Solo enviar Content-Type JSON cuando hay cuerpo (evita preflight OPTIONS innecesario en GET)
+  if (restOptions.body !== undefined && !mergedHeaders['Content-Type']) {
+    mergedHeaders['Content-Type'] = 'application/json';
+  }
 
   if (MUTATING_METHODS.has(upperMethod) && csrfTokenMemory) {
     mergedHeaders['X-CSRF-Token'] = csrfTokenMemory;
