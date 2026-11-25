@@ -1,0 +1,24 @@
+# Entorno y secretos (NUNCA subir a Git)
+.env
+.env.*
+!.env.example
+
+# Dependencias y compilaciones
+node_modules/
+dist/
+build/
+coverage/
+*.log
+
+# Sistema y editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Documentación interna del agente y prompts (no subir a GitHub)
+bitacora_agente.md
+prompts_indicaciones.md
+
+
+.agents/
